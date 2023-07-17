@@ -15,7 +15,7 @@ app = FastAPI()
 
 # 设置跨域
 origins = [
-    "http://localhost:8082",
+    "http://localhost:8080",
 ]
 
 app.add_middleware(
