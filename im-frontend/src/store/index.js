@@ -16,6 +16,9 @@ export default createStore({
       state.user = null;  // 假设你的用户状态是存储在 state.user 中的
       state.websocket = null;  // 同样的，你也可以在这里关闭 websocket 连接
     },
+    updateUser(state, payload) {
+      state.user = payload;
+    },
   },
   actions: {
     setUser({ commit }, user) {

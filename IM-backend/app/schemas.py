@@ -10,7 +10,9 @@ class UserCreate(UserBase):
     password: str
 
 class UserUpdate(UserBase):
-    pass
+    username: Optional[str] = None
+    email: Optional[str] = None
+    password: Optional[str] = None
 
 class UserLogin(BaseModel):
     username: str

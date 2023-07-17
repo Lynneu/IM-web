@@ -1,17 +1,19 @@
 <template>
   <el-container direction="vertical">
-    <el-header style="text-align: right; font-size: 20px;">
+    <el-header style="text-align: right;">
       <el-dropdown>
-        <span v-if="user" class="el-dropdown-link">
+        <el-button class="circular-button">
+        <span v-if="user" style="text-align: center; font-size: large;">
           {{ user.username }}
-          <i class="el-icon-arrow-down el-icon--right"></i>
+          
         </span>
+      </el-button>
         <template v-slot:dropdown>
           <el-dropdown-menu>
-            <!-- <el-dropdown-item>
-              <router-link :to="{ name: 'userProfile' }">User Profile</router-link>
-            </el-dropdown-item> -->
-            <el-dropdown-item @click="backtoLogin">Logout</el-dropdown-item>
+            <el-dropdown-item @click="changeinfo">个人信息
+              <!-- <router-link :to="{ name: 'userInfo' }">个人信息</router-link> -->
+            </el-dropdown-item>
+            <el-dropdown-item @click="backtoLogin">注销</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -22,10 +24,10 @@
           <h2>Test Chat</h2>
           <el-card class="box-card">
             <el-form @submit.prevent="addFriend">
-              <el-form-item label="Friend's ID">
-                <el-input v-model="friendName" placeholder="friend's ID"></el-input>
+              <el-form-item label="用户名">
+                <el-input v-model="friendName" placeholder="请输入用户名"></el-input>
               </el-form-item>
-              <el-button type="primary" native-type="submit">Add Friend</el-button>
+              <el-button type="primary" native-type="submit">添加好友</el-button>
             </el-form>
           </el-card>
         </el-col>
@@ -61,11 +63,6 @@
 </template>
 
 
-
-
-
-
-  
 <script>
 import { ref, reactive, computed, onMounted } from "vue";
 import axios from 'axios';
@@ -107,6 +104,10 @@ export default {
       console.log(user.value)
       
       router.push({ name: 'UserLogin' });
+    }
+
+    const changeinfo = () => {
+      router.push({ name: 'userInfo' });
     }
 
     onMounted(async () => {
@@ -189,7 +190,8 @@ export default {
       register,
       addFriend,
       sendMessage,
-      backtoLogin
+      backtoLogin,
+      changeinfo
     };
   },
 };
@@ -216,7 +218,7 @@ export default {
 } */
 
 .el-header {
-  background-color: #B3C0D1;
+  background-color: #337ecc;
   color: #333;
   line-height: 60px;
 }
@@ -225,4 +227,13 @@ export default {
   margin-bottom: 15px;
 }
 
+.circular-button {
+  border-radius: 50%; /* 设置圆角为 50%，使按钮形状变为圆形 */
+  width: 50px; /* 可根据需要修改 */
+  height: 50px; /* 可根据需要修改 */
+  display: flex; /* 用于设置按钮中的元素居中 */
+  align-items: center; /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+  margin: 5px;
+}
 </style>

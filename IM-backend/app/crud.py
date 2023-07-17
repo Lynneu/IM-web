@@ -43,12 +43,18 @@ def update_user(db: Session, user_id: int, user_update: schemas.UserUpdate):
     if db.query(User).filter(User.id != user_id, User.email == user_update.email).first():
         raise HTTPException(status_code=400, detail="Email already in use")
 
+    print(user_update)
     for var, value in vars(user_update).items():
         if value:  # 只有当 value 存在时，才进行赋值
             # 如果更新密码，确保密码被加密
+            print(value)
             if var == 'password':
-                value = password.get_password_hash(value)
-            setattr(user, var, value)
+                print(value)
+                hashed_password = password.get_password_hash(value)
+                print(hashed_password)
+                setattr(user, var, hashed_password)
+            else:
+                setattr(user, var, value)
 
     db.add(user)
     db.commit()
