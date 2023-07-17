@@ -1,0 +1,43 @@
+<template>
+  <router-view/>
+</template>
+
+<script>
+export default {
+  name: 'App',
+}
+</script>
+
+<style>
+  /*引入阿里字体图标*/
+  @import './assets/iconfont/iconfont.css';
+
+  #app {
+    height: 100%;
+  }
+
+  /*全局样式*/
+  * {
+    font-family: "HanHei SC",PingHei,"PingFang SC","Helvetica Neue",Helvetica,Arial,"Microsoft Yahei","Hiragino Sans GB","Heiti SC","WenQuanYi Micro Hei",sans-serif;;
+    font-style: normal;
+    font-weight: normal;
+  }
+
+  body, html {
+    
+    font-size: 12px;
+    width: 100%;
+    height: 100%;
+  }
+
+  a {
+    text-decoration: none;
+    outline: none;
+    font-size: 20px;
+    color: #333;
+  }
+
+  ul {
+    list-style: none;
+  }
+</style>
