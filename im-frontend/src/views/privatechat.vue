@@ -1,5 +1,5 @@
 <template>
-  <button @click="backToPreviousPage">返回</button>
+  <el-button @click="backToPreviousPage">返回</el-button>
   <div class="chat-container">
     <div class="chat-title">{{ friendName }}</div>
     <div class="chat-main">
@@ -573,9 +573,9 @@ export default {
     width: 70px;
     height: 30px;
     font-size: 15px;
-    border: 1px solid #d02129;
+    border: 1px solid #409EFF;
     background-color: #ffffff;
-    color: #d02129;
+    color: #409EFF;
     border-radius: 5px;
   }
 

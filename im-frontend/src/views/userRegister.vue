@@ -101,7 +101,7 @@
     text-align: center;
     font-size: 30px;
     font-weight: 500;
-    color: #d02129;
+    color: #409EFF;
   }
 
   .register-form {
@@ -200,7 +200,7 @@
   .form-item-btn {
     width: 100%;
     color: #FFFFFF;
-    background-color: #d02129;
+    background-color: #409EFF;
     border: none;
     height: 35px;
     cursor: pointer;
@@ -210,7 +210,7 @@
   }
 
   .form-error {
-    color: #d02129;
+    color: #409EFF;
     margin-bottom: 22px;
   }
 

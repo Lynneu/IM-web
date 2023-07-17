@@ -1,51 +1,81 @@
 <template>
-    <div>
-      <h1>Test Chat</h1>
-    
-      <!-- Add Friend -->
-      <div class="section">
-        <h2>添加好友</h2>
-        <input v-model="friendId" placeholder="friend's ID" />
-        <button @click="addFriend">Add Friend</button>
-      </div>
-  
-       <!-- Friends List -->
-       <div class="section">
-        <h2>好友列表</h2>
-        <div v-if="friends.length">
-          <div v-for="(friend, key) in friends" :key="key" class="friend-item">
-            <router-link 
-              :to="{
-                name: 'privatechat', 
-                params: { 
-                  friendId: friend.id,
-                  friendName: friend.username 
-                }
-              }"
+  <el-container direction="vertical">
+    <el-header style="text-align: right; font-size: 20px;">
+      <el-dropdown>
+        <span v-if="user" class="el-dropdown-link">
+          {{ user.username }}
+          <i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
+        <template v-slot:dropdown>
+          <el-dropdown-menu>
+            <!-- <el-dropdown-item>
+              <router-link :to="{ name: 'userProfile' }">User Profile</router-link>
+            </el-dropdown-item> -->
+            <el-dropdown-item @click="backtoLogin">Logout</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </el-header>
+    <el-main>
+      <el-row :gutter="20">
+        <el-col :span="6">
+          <h2>Test Chat</h2>
+          <el-card class="box-card">
+            <el-form @submit.prevent="addFriend">
+              <el-form-item label="Friend's ID">
+                <el-input v-model="friendName" placeholder="friend's ID"></el-input>
+              </el-form-item>
+              <el-button type="primary" native-type="submit">Add Friend</el-button>
+            </el-form>
+          </el-card>
+        </el-col>
+        <el-col :span="18">
+          <el-card class="box-card">
+            <h2>好友列表</h2>
+            <el-list-item 
+              v-for="(friend, key) in friends" 
+              :key="key" 
+              class="friend-item"
             >
-            <div>
-              {{ friend.username }}
-              <span v-if="friend.online == true" class="status-online">[在线]</span>
-              <span v-if="friend.online == false" class="status-offline">[离线]</span>
-            </div>
-        </router-link>
-          </div>
-        </div>
-        <div v-else>- No Friends -</div>
-      </div>
-  
-    </div>
+              <router-link 
+                :to="{
+                  name: 'privatechat', 
+                  params: { 
+                    friendId: friend.id,
+                    friendName: friend.username 
+                  }
+                }"
+              >
+                <div>
+                  <el-tag v-if="friend.online" type="success">在线</el-tag>
+                  <el-tag v-if="!friend.online" type="info">离线</el-tag>
+                  {{ friend.username }}
+                </div>
+              </router-link>
+            </el-list-item>
+          </el-card>
+        </el-col>
+      </el-row>
+    </el-main>
+  </el-container>
 </template>
+
+
+
+
+
 
   
 <script>
 import { ref, reactive, computed, onMounted } from "vue";
 import axios from 'axios';
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'HelloWorld',
   setup() {
+    const router = useRouter()
     const store = useStore()
     const user = computed(() => store.state.user)  // get user from store
     const socket = computed(() => store.state.websocket) // get websocket from store
@@ -56,6 +86,7 @@ export default {
       password: '',
     });  
     const friendId = ref("");
+    const friendName = ref("")
     const message = ref("");
     const receiveMessage = ref([])
 
@@ -68,6 +99,16 @@ export default {
       friends.value = response.data
     }
     
+    const backtoLogin = () => {
+      console.log('logout')
+      console.log(user.value)
+      socket.value.close()
+      store.commit('clearUserState');  // 调用 mutation 来清除用户状态
+      console.log(user.value)
+      
+      router.push({ name: 'UserLogin' });
+    }
+
     onMounted(async () => {
       await fetchFriends();
       if (socket.value) {
@@ -117,7 +158,7 @@ export default {
         if (!user.value) {
           throw new Error('User not logged in');
         }
-        await axios.put(`http://localhost:8000/users/${user.value.id}/friends/${friendId.value}`);
+        await axios.put(`http://localhost:8000/users/${user.value.id}/friends/${friendName.value}`);
         alert('Friend added successfully');
         await fetchFriends(); 
       } catch (error) {
@@ -140,6 +181,7 @@ export default {
       friends,
       registerUser,
       friendId,
+      friendName,
       message,
       receiveMessage,
       user,  // return user
@@ -147,6 +189,7 @@ export default {
       register,
       addFriend,
       sendMessage,
+      backtoLogin
     };
   },
 };
@@ -154,7 +197,7 @@ export default {
 
   
   <style scoped>
-.section {
+/* .section {
   margin-bottom: 2rem;
 }
 
@@ -170,5 +213,16 @@ export default {
 
 .status-offline {
   color: red;
+} */
+
+.el-header {
+  background-color: #B3C0D1;
+  color: #333;
+  line-height: 60px;
 }
+
+.friend-item {
+  margin-bottom: 15px;
+}
+
 </style>

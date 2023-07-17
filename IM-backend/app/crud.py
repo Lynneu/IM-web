@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
 from . import models, schemas, password
+from fastapi import HTTPException
+from .models import User
 
 def get_user(db: Session, user_id: int):
     """
@@ -34,12 +36,25 @@ def update_user(db: Session, user_id: int, user_update: schemas.UserUpdate):
     user = get_user(db, user_id)
     if user is None:
         return None
+
+    # 检查新的用户名和邮箱是否已经被其他用户使用
+    if db.query(User).filter(User.id != user_id, User.username == user_update.username).first():
+        raise HTTPException(status_code=400, detail="Username already in use")
+    if db.query(User).filter(User.id != user_id, User.email == user_update.email).first():
+        raise HTTPException(status_code=400, detail="Email already in use")
+
     for var, value in vars(user_update).items():
-        setattr(user, var, value) if value else None
+        if value:  # 只有当 value 存在时，才进行赋值
+            # 如果更新密码，确保密码被加密
+            if var == 'password':
+                value = password.get_password_hash(value)
+            setattr(user, var, value)
+
     db.add(user)
     db.commit()
     db.refresh(user)
     return user
+
 
 def update_online_status(db: Session, user_id: int, online: bool):
     user = get_user(db, user_id=user_id)
@@ -90,15 +105,16 @@ def create_message(db: Session, message: schemas.MessageCreate):
     db.refresh(db_message)
     return db_message
 
-def add_friend(db: Session, user_id: int, friend_id: int):
+def add_friend(db: Session, user_id: int, friend_name: str):
     """
     添加好友
     """
+    friend_id = get_user_by_username(db, friend_name).id
     if user_id == friend_id:
         raise ValueError("Cannot add oneself as a friend")
 
     user = db.query(models.User).filter(models.User.id == user_id).first()
-    friend = db.query(models.User).filter(models.User.id == friend_id).first()
+    friend = db.query(models.User).filter(models.User.username == friend_name).first()
     if friend not in user.friends:
         user.friends.append(friend)
         friend.friends.append(user)

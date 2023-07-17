@@ -27,6 +27,11 @@ const routes = [
     component: userFriends,
   },
   {
+    path: '/userInfo',
+    name: 'userInfo',
+    component: () => import('@/views/userInfo.vue'),
+  },
+  {
     path: '/privatechat/:friendId',
     name: 'privatechat',
     component: () => import('@/views/privatechat.vue'),
