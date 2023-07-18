@@ -4,7 +4,7 @@
       <el-dropdown>
         <el-button class="circular-button">
         <span v-if="user" style="text-align: center; font-size: large;">
-          {{ user.username }}
+          {{ user.username.slice(-1) }}
           
         </span>
       </el-button>
@@ -21,7 +21,7 @@
     <el-main>
       <el-row :gutter="20">
         <el-col :span="6">
-          <h2>Test Chat</h2>
+          <h2>添加好友</h2>
           <el-card class="box-card">
             <el-form @submit.prevent="addFriend">
               <el-form-item label="用户名">
@@ -32,29 +32,18 @@
           </el-card>
         </el-col>
         <el-col :span="18">
+          <h2>好友列表</h2>
           <el-card class="box-card">
-            <h2>好友列表</h2>
-            <el-list-item 
-              v-for="(friend, key) in friends" 
-              :key="key" 
-              class="friend-item"
-            >
-              <router-link 
-                :to="{
-                  name: 'privatechat', 
-                  params: { 
-                    friendId: friend.id,
-                    friendName: friend.username 
-                  }
-                }"
+            <el-table :data="friends" style="width: 100%" @row-click="goToChat">
+              <el-table-column prop="username" label="用户名"></el-table-column>
+              <el-table-column
+                label="状态"
               >
-                <div>
-                  <el-tag v-if="friend.online" type="success">在线</el-tag>
-                  <el-tag v-if="!friend.online" type="info">离线</el-tag>
-                  {{ friend.username }}
-                </div>
-              </router-link>
-            </el-list-item>
+                <template #default="scope">
+                  <el-tag :type="scope.row.online ? 'success' : 'info'">{{ scope.row.online ? '在线' : '离线' }}</el-tag>
+                </template>
+              </el-table-column>
+            </el-table>
           </el-card>
         </el-col>
       </el-row>
@@ -86,6 +75,16 @@ export default {
     const friendName = ref("")
     const message = ref("");
     const receiveMessage = ref([])
+
+    const goToChat = (row) => {
+      router.push({
+        name: 'privatechat', 
+        params: { 
+          friendId: row.id,
+          friendName: row.username 
+        }
+      });
+    };
 
     const fetchFriends = async () => {
       const userId = user.value.id
@@ -143,7 +142,7 @@ export default {
 
     const register = async () => {
       try {
-        const response = await axios.post("http://localhost:8000/users/", {
+        const response = await axios.post("http://127.0.0.1:8000/users/", {
           username: registerUser.username,
           email: registerUser.email,
           password: registerUser.password,
@@ -191,7 +190,8 @@ export default {
       addFriend,
       sendMessage,
       backtoLogin,
-      changeinfo
+      changeinfo,
+      goToChat
     };
   },
 };

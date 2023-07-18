@@ -1,6 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import UserLogin from '../views/login.vue';
-import userFriends from '../views/conversations.vue';
 import helloWorld from '../views/helloWorld.vue';
 
 const routes = [
@@ -18,13 +17,6 @@ const routes = [
     path: '/userRegister',
     name: 'UserRegister',
     component: () => import(/* webpackChunkName: "register" */ '../views/userRegister.vue')
-  },
-  
-  // 如果有其他页面，你可以按照下面的格式添加：
-  {
-    path: '/conversations',
-    name: 'userFriends',
-    component: userFriends,
   },
   {
     path: '/userInfo',

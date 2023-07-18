@@ -188,7 +188,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int, background_ta
         manager.disconnect(client_id, websocket)
         crud.update_online_status(db, client_id, False)
         await manager.broadcast_offline_status(client_id, db)  # 更新
-        await manager.send_group_message(f"Client #{client_id} left the chat", users_in_chat)
+        # await manager.send_group_message(f"Client #{client_id} left the chat", users_in_chat)
 
     except json.JSONDecodeError:
         await manager.send_personal_message("Error: Message is not in the correct format.", client_id)

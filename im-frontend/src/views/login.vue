@@ -62,7 +62,7 @@
       const login = async () => {
         if (state.username.trim() !== '' && state.password.value.trim() !== '') {
           try {
-            const response = await axios.post("http://localhost:8000/login", {
+            const response = await axios.post("http://127.0.0.1:8000/login", {
               username: state.username,
               password: state.password.value,
             })
